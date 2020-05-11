@@ -4,13 +4,13 @@
 Contents
 ========
 
-[Introduction](#introduction)
-[Understanding the built-in RBAC roles](#understanding-the-built-in-rbac-roles)
-[Built-in Management Roles](#built-in-management-roles)
-[Built-in Data Roles](#built-in-data-roles)
-[How data lake structure relates to access control](#how-data-lake-structure-relates-to-access-control)
-[How access is evaluated in ADLS](#how-access-is-evaluated-in-adls)
-[How to create a data lake container](#how-to-create-a-data-lake-container)
+- [Introduction](#introduction)
+- [Understanding the built-in RBAC roles](#understanding-the-built-in-rbac-roles)
+- [Built-in Management Roles](#built-in-management-roles)
+- [Built-in Data Roles](#built-in-data-roles)
+- [How data lake structure relates to access control](#how-data-lake-structure-relates-to-access-control)
+- [How access is evaluated in ADLS](#how-access-is-evaluated-in-adls)
+- [How to create a data lake container](#how-to-create-a-data-lake-container)
   - [Using the Portal](#using-the-portal)
   - [Using Storage Explorer](#using-storage-explorer)
   - [Using the API](#using-the-api)
@@ -53,15 +53,15 @@ is by no means an endorsement of best practise nor may it be the correct
 approach for your organisation. Additionally, the examples use an over
 simplified representation of folder structures to illustrate the point
 but is not necessarily a reflection of reality. When a path such as
-
+```text
 /raw/data\_asset
-
+```
 is referenced, in reality this may a be more complex structure with
 "self-documenting" metadata embedded in the path that lead to the files,
 e.g.:
-
+```text
 /datalake/raw/internal/datasource/entity/YYYY/MM/DD/\*
-
+```
 For further ideas on data lake structure and design there are a number
 of online resources such as this [TechNet
 article](https://cloudblogs.microsoft.com/industry-blog/en-gb/technetuk/2020/04/09/building-your-data-lake-on-azure-data-lake-storage-gen2-part-1/).
@@ -174,6 +174,8 @@ document to decide whether RBAC or ACLs, or a combination of both, will
 best suits your scenario. When assigning permissions at a greater scope
 than the data lake level, please refer the [RBAC
 documentation](https://docs.microsoft.com/en-gb/azure/storage/common/storage-auth-aad-rbac-portal?toc=%2fazure%2fstorage%2fblobs%2ftoc.json#determine-resource-scope).
+
+> **_Note:_** If your subscription includes an Azure Databricks namespace, roles that are scoped to the subscription will not grant access to storage account data. Scope roles to the resource group, storage account, or container level instead.
 
 How access is evaluated in ADLS
 ===============================
