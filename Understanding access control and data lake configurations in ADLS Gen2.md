@@ -105,6 +105,8 @@ Azure REST APIs, please refer to the following
 [documentation](https://docs.microsoft.com/en-gb/rest/api/azure/) to
 help you get started.
 
+> **_NOTE:_** Creating security groups requires necessary permissions to your Azure Active Directory (AAD) tenant or the Microsoft Graph API. In some organisations this level of access can be difficult to obtain, therefore to follow the steps in this article it may be easier to use a personal account with a Visual Studio subscription or ask your Azure Administrator to create a new AAD tenant and add a subscription to the new directory. 
+
 Understanding the built-in RBAC roles
 =====================================
 
