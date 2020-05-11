@@ -438,5 +438,5 @@ This approach favours scenarios where most users need read access to but only a 
 
 ### Storage permutations
 
-![hybriddesignpermutations.png](media/hybriddesignpermutations.png.png)
+![hybriddesignpermutations](media/hybriddesignpermutations.png)
 
