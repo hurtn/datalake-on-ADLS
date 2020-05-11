@@ -1,6 +1,5 @@
 # Understanding access control and data lake configurations in ADLS Gen2
 
-
 Contents
 ========
 
@@ -145,7 +144,7 @@ later as transformation pipelines are built to cleanse and enrich the
 data. Data often needs to be prepared, modelled and optimised for
 analytics before it is transformed and stored in the curated layer.
 
-![generic data lake structure](media/data_lake_structure.png)
+![generic data lake structure](media/datalakestructure.png)
 
 Often the value of data, and therefore implicitly the layers also, have
 a bearing on which groups of users (automated or human) access the data
@@ -190,13 +189,9 @@ networking configuration. It also excludes scenarios in which the
 security principal has been assigned the Storage Blob Data Owner
 built-in role which provides *super-user* access.
 
-![](media/image4.png){width="6.268055555555556in"
-height="4.384722222222222in"}
+![](media/howaccessisevaluated.png)
 
-*Figure 2*
-
-See
-[here](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storage-access-control#common-scenarios-related-to-permissions)
+See [here](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storage-access-control#common-scenarios-related-to-permissions)
 for another example of what ACL based permissions are required for a
 given operation.
 
