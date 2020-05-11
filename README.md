@@ -1,7 +1,7 @@
 # Building a Datalake on ADLS
-This repo takes a deeper look into access control and data lake configuration. It includes code snippets to demonstrate how various elements of the lake can be provisioned through the RESTful APIs.
+This repo takes a deeper look into access control and data lake configuration. It includes code snippets to demonstrate how various elements of the lake can be provisioned through the RESTful APIs to support LakeOps.
 
-To get started, read the guidance on Understanding access control and data lake configurations in ADLS Gen2
+To get started, read the guidance on [Understanding access control and data lake configurations in ADLS Gen2](https://github.com/hurtn/datalake-on-ADLS/blob/master/Understanding%20access%20control%20and%20data%20lake%20configurations%20in%20ADLS%20Gen2.md)
 
 For further reading material on ADLS and data lakes in general please see the following recommended resources:
 
