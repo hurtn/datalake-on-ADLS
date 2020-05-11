@@ -5,55 +5,30 @@ Contents
 ========
 
 [Introduction](#introduction)
-
 [Understanding the built-in RBAC roles](#understanding-the-built-in-rbac-roles)
-
 [Built-in Management Roles](#built-in-management-roles)
-
 [Built-in Data Roles](#built-in-data-roles)
-
 [How data lake structure relates to access control](#how-data-lake-structure-relates-to-access-control)
-
 [How access is evaluated in ADLS](#how-access-is-evaluated-in-adls)
-
 [How to create a data lake container](#how-to-create-a-data-lake-container)
-
   - [Using the Portal](#using-the-portal)
-
   - [Using Storage Explorer](#using-storage-explorer)
-
   - [Using the API](#using-the-api)
-
 [How to create security groups](#how-to-create-security-groups)
-
   - [Using the Portal](#using-the-portal-1)
-
   - [Using the API](#using-the-api-1)
-
 [Configuring access to ADLS & data lake storage configurations](#configuring-access-to-adls-data-lake-storage-configurations)
-
   - [Using RBAC only](#using-rbac-only)
-
     - [Using the Portal](#using-the-portal-2)
-
     - [Using the API](#using-the-api-2)
-
     - [Storage configurations](#storage-configurations)
-
   - [Using ACLs only](#using-acls-only)
-
     - [Use nested groups where possible](#use-nested-groups-where-possible)
-
     - [Using Storage Explorer in the Portal (Preview)](#using-storage-explorer-in-the-portal-preview)
-
     - [Using Azure Storage Explorer](#using-azure-storage-explorer)
-
     - [Using the API](#using-the-api-3)
-
     - [Design permutations](#design-permutations)
-
   - [Using both RBAC and ACLs](#using-both-rbac-and-acls)
-
     - [Design considerations](#design-considerations)
 
 Introduction
@@ -105,7 +80,7 @@ Azure REST APIs, please refer to the following
 [documentation](https://docs.microsoft.com/en-gb/rest/api/azure/) to
 help you get started.
 
-> **_NOTE:_** Creating security groups requires necessary permissions to your Azure Active Directory (AAD) tenant or the Microsoft Graph API. In some organisations this level of access can be difficult to obtain, therefore to follow the steps in this article it may be easier to use a personal account with a Visual Studio subscription or ask your Azure Administrator to create a new AAD tenant and add a subscription to the new directory. 
+> **_Note:_** Creating security groups requires necessary permissions to your Azure Active Directory (AAD) tenant or the Microsoft Graph API. In some organisations this level of access can be difficult to obtain, therefore to follow the steps in this article it may be easier to use a [free account](https://azure.microsoft.com/en-gb/free/), or personal account with a [Visual Studio subscription](https://docs.microsoft.com/en-us/visualstudio/subscriptions/vs-azure) or ask your Azure Administrator to create a new AAD tenant and [add a subscription](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-subscriptions-associated-directory) to the new directory. 
 
 Understanding the built-in RBAC roles
 =====================================
@@ -133,43 +108,30 @@ various client tools to access the data.
 Built-in Management Roles
 -------------------------
 
--   [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner):
-    > Manage everything, including access to resources. **Note**: this
-    > role will give you key access.
+-   [Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#owner):Manage everything, including access to resources. **Note**: this role will give you key access.
 
--   [Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#contributor):
-    > Manage everything, excluding access to resources. **Note**: this
-    > role will give you key access.
+-   [Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#contributor): Manage everything, excluding access to resources. **Note**: this role will give you key access.
 
--   [Reader](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#reader):
-    > Read and list resources.
+-   [Reader](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#reader): Read and list resources.
 
 Built-in Data Roles
 -------------------
 
--   [Storage Account
-    > Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-account-contributor):
-    > Full management of storage accounts. **Note**: this role will give
-    > you key access.
+-   [Storage Account Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-account-contributor): Full management of storage accounts. **Note**: this role will give you key access.
 
--   [Storage Blob Data
-    > Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-blob-data-owner):
-    > Full access to Azure Storage blob containers and data including
-    > setting of ownership and managing POSIX access control (ACLs)
+-   [Storage Blob Data Owner](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-blob-data-owner): Full access to Azure Storage blob containers and data including setting of ownership and managing POSIX access control (ACLs)
 
--   [Storage Blob Data
-    > Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-blob-data-contributor):
-    > Read, write, and delete Azure Storage containers and blobs.
+-   [Storage Blob Data Contributor](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-blob-data-contributor): Read, write, and delete Azure Storage containers and blobs.
 
--   [Storage Blob Data
-    > Reader](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-blob-data-reader):
-    > Read and list Azure Storage containers and blobs.
+-   [Storage Blob Data Reader](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-blob-data-reader):  Read and list Azure Storage containers and blobs.
 
 Storage Blob Data Owner is considered a super-user and is granted full
 access to all mutating operations, including setting the owner of a
 directory or file as well as ACLs for directories and files for which
 they are not the owner. Super-user access is the only authorized manner
 to change the owner of a resource.
+
+> **_Note:_** RBAC assignments can take up to 5 minutes to propagate and take affect.
 
 How data lake structure relates to access control
 =================================================
@@ -183,9 +145,7 @@ later as transformation pipelines are built to cleanse and enrich the
 data. Data often needs to be prepared, modelled and optimised for
 analytics before it is transformed and stored in the curated layer.
 
-![](media/image2.png){width="0.48055555555555557in"
-height="0.48055555555555557in"}![](media/image2.png){width="0.4811318897637795in"
-height="0.4811318897637795in"}
+![generic data lake structure](media/data_lake_structure.png)
 
 Often the value of data, and therefore implicitly the layers also, have
 a bearing on which groups of users (automated or human) access the data
