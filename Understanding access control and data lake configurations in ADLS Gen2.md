@@ -342,43 +342,16 @@ In this pattern each storage account will represent a particular zone,
 for example raw or curated, and the lowest level of granularity at which
 permissions could be applied is at the data asset level.
 
+> **_Caution:_** Role assignments are limited to 2000 per subscription therefore option 2 is not recommended for a large number of data assets. Instead grant RBAC at storage account level or use ACLs as a method of access control.
+
 Using ACLs only
 ---------------
 
 ### Use nested groups where possible
 
-As per the [ADLS best
-practices](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-best-practices#use-security-groups-versus-individual-users)
-it is recommended to assign access control entries to a security group
-rather than an individual user or service principal. When adding or
-removing users from the group no updates to ADLS are required and using
-groups also reduces the chance of exceeding the 32 access control
-entries per file or folder ACL. After the 4 default entries that leaves
-only 28 remaining entries for permission assignments. When granular
-permissions with unique assignments are required, a proliferation of
-access control entries may occur at the top levels of the directory
-tree, even when using groups. An example of this is when each data asset
-requires a custom set of permissions, and hence a different group
-assignment, as depicted below:
+As per the [ADLS best practices](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-best-practices#use-security-groups-versus-individual-users) it is recommended to assign access control entries to a security group rather than an individual user or service principal. When adding or removing users from the group no updates to ADLS are required and using groups also reduces the chance of exceeding the 32 access control entries per file or folder ACL. After the 4 default entries that leaves only 28 remaining entries for permission assignments. When granular permissions with unique assignments are required, a proliferation of access control entries may occur at the top levels of the directory tree, even when using groups. An example of this is when each data asset requires a custom set of permissions, and hence a different group assignment, as depicted below:
 
-![](media/image16.png){width="0.31319444444444444in"
-height="0.31319444444444444in"}![](media/image10.png){width="3.0129866579177604in"
-height="2.00625in"}
-
-![](media/image17.png){width="0.25972222222222224in"
-height="0.25972222222222224in"}
-
-![](media/image17.png){width="0.25972222222222224in"
-height="0.25972222222222224in"}
-
-![](media/image17.png){width="0.25972222222222224in"
-height="0.25972222222222224in"}
-
-![](media/image17.png){width="0.25972222222222224in"
-height="0.25972222222222224in"}
-
-![](media/image17.png){width="0.25972222222222224in"
-height="0.25972222222222224in"}
+![flatgroupsissue](media/flatgroupsissue.png)
 
 In order for each group to obtain read access to the files contained in
 their folder, they will need execute permissions from root, which is the
@@ -397,6 +370,8 @@ permissions as these permissions will be inherited because it belongs to
 the parent group. Additional nesting may provide greater flexibility if
 the security groups represent the teams or automated jobs which are
 sub-divided into readers and writers.
+
+![nestedgroups](media/nestedgroups.png)
 
 ### Using Storage Explorer in the Portal (Preview)
 
