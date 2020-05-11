@@ -251,7 +251,7 @@ Using the API
 
 3.  Use the following python code to create an authorisation token and create a container. Replace the tokens in parentheses with the required information. Ensure that a [valid container name](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create#name-a-container) is specified.
 
-https://github.com/hurtn/datalake-on-ADLS/blob/3507ebdc2e9b93ac1a8e295d88cbf217184af9f1/APIs/create_ADLS_container.py#L1-L18
+[Click here to view the code sample](https://github.com/hurtn/datalake-on-ADLS/blob/3507ebdc2e9b93ac1a8e295d88cbf217184af9f1/APIs/create_ADLS_container.py)
 
 How to create security groups 
 ==============================
