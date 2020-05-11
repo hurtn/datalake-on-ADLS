@@ -236,7 +236,7 @@ Using Storage Explorer
 
 7.  Enter a [valid](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create#name-a-container) container name and hit enter
 
-![createcontainerusingstorageexplorer.png](media/createcontainerusingstorageexplorer.png.png)
+![createcontainerusingstorageexplorer.png](media/createcontainerusingstorageexplorer.png)
 
 > **_Note:_** Storage Explorer requires access to both management layer (subscriptions and storage accounts) and data layer (containers, blobs and data), therefore will require at least the Reader role to list storage accounts, and the Storage Blob Data Reader role to list or download folders and files. Alternatively, a SAS URI can be used if access to the management layer is not impossible. For information please see the [documentation](https://docs.microsoft.com/en-us/azure/storage/common/storage-explorer-troubleshooting?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&tabs=Windows%2C1904).
 
@@ -313,7 +313,7 @@ When using only RBAC, one may question whether ADLS Gen2 is required at all, par
 
 6.  Select the security principal to assign the role to
 
-![assignrbacusingportal](media/assignrbacusingportal)
+![assignrbacusingportal](media/assignrbacusingportal.png)
 
 ### Using the API
 
