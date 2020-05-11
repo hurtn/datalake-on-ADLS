@@ -189,7 +189,7 @@ networking configuration. It also excludes scenarios in which the
 security principal has been assigned the Storage Blob Data Owner
 built-in role which provides *super-user* access.
 
-![](media/howaccessisevaluated.png)
+![howaccessisevaluated](media/howaccessisevaluated.png)
 
 See [here](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storage-access-control#common-scenarios-related-to-permissions)
 for another example of what ACL based permissions are required for a
@@ -251,7 +251,7 @@ Using the API
 
 3.  Use the following python code to create an authorisation token and create a container. Replace the tokens in parentheses with the required information. Ensure that a [valid container name](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create#name-a-container) is specified.
 
-[Click here to view the code sample](https://github.com/hurtn/datalake-on-ADLS/blob/3507ebdc2e9b93ac1a8e295d88cbf217184af9f1/APIs/create_ADLS_container.py)
+[Click here to view the code sample](./APIs/create_ADLS_container.py)
 
 How to create security groups 
 ==============================
@@ -271,8 +271,7 @@ Using the Portal
 
 6.  Click Create
 
-![](media/image7.png){width="3.4714523184601926in"
-height="3.2641502624671914in"}
+![creategroupusingportal](media/creategroupusingportal.png)
 
 Using the API
 -------------
@@ -285,64 +284,7 @@ section is optional but allows you to add members to the group. See
 [here](https://docs.microsoft.com/en-us/graph/api/group-post-groups?view=graph-rest-beta&tabs=http)
 for more details about the permissions required and the API definition.
 
-import json
-
-import requests
-
-\#Setup the endpoint and create the bearer token
-
-endpoint =
-\'https://login.microsoftonline.com/\[TENANT\_ID\]/oauth2/token\'
-
-headers = {\'Content-Type\': \'application/x-www-form-urlencoded\'}
-
-payload =
-\'grant\_type=client\_credentials&client\_id=\[CLIENT\_ID\]&client\_secret=\[CLIENT\_SECRET\]&resource=https%3A%2F%2Fgraph.microsoft.com%2F\'
-
-r = requests.post(endpoint, headers=headers, data=payload)
-
-response = r.json()
-
-bearertoken = response\[\"access\_token\"\]
-
-\#Setup the graph endpoint
-
-endpoint = \'https://graph.microsoft.com/beta/groups\'
-
-headers = {\'Content-Type\': \'application/json\', \'Authorization\':
-\'Bearer %s\' % bearertoken}
-
-params = {
-
-\'api-version\': \'2013-11-08\'
-
-}
-
-payload = {
-
-\"description\": \"\[Group description\]\",
-
-\"displayName\": \"\[Group Name\]\",
-
-\"mailEnabled\": \"false\",
-
-\"mailNickname\": \"\",
-
-\"securityEnabled\": \"true\",
-
-\"members\@odata.bind\": \[
-
-\"https://graph.microsoft.com/beta/servicePrincipals/\[OBJECT\_ID\]\"
-
-\]
-
-}
-
-r=requests.post(endpoint, headers=headers, data=json.dumps(payload))
-
-print(r.status\_code)
-
- 
+[Click here to view the code sample](./APIs/create_security_group.py)
 
 Configuring access to ADLS & data lake storage configurations
 =============================================================
