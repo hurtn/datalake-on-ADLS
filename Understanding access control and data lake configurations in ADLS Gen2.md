@@ -197,8 +197,8 @@ given operation.
 
 
 > **_Note:_**  
-- ACLs apply only to security principals in the same tenant, including guest users.
--	Azure Databricks mount points can be created by any user with permissions to attach to a cluster. The mount point will be configured using service principal credentials or the AAD passthrough option, but at the time of creation permissions are not evaluated. Only when an operation is performed using the mount point will permissions be evaluated and any user who can attach to a cluster can attempt to use the mount point. Securing access to ADLS from Azure Databricks is covered in more detail here.
+> - ACLs apply only to security principals in the same tenant, including guest users.
+> -	Azure Databricks mount points can be created by any user with permissions to attach to a cluster. The mount point will be configured using service principal credentials or the AAD passthrough option, but at the time of creation permissions are not evaluated. Only when an operation is performed using the mount point will permissions be evaluated and any user who can attach to a cluster can attempt to use the mount point. Securing access to ADLS from Azure Databricks is covered in more detail here.
 
 
 How to create a data lake container 
@@ -297,17 +297,7 @@ portal, storage
 Using RBAC only
 ---------------
 
-When using only RBAC, one may question whether ADLS Gen2 is required at
-all, particularly as there is an [additional
-cost](https://azure.microsoft.com/en-gb/pricing/details/storage/data-lake/)
-associated with the hierarchical namespace (HNS)option. The answer is
-flexibility because HNS cannot be enabled on a general purpose v2
-storage account after the account has been created. Therefore to
-accommodate fine-grained access control later, without having to migrate
-the data, it is advisable to use ADLS with HNS enabled when building a
-data lake on Azure.
-
-\#\#\#Add information on renaming of folders
+When using only RBAC, one may question whether ADLS Gen2 is required at all, particularly as there is an [additional cost](https://azure.microsoft.com/en-gb/pricing/details/storage/data-lake/) associated with the hierarchical namespace (HNS)option. The answer is flexibility because HNS cannot be enabled on a general purpose v2 storage account after the account has been created. Therefore to accommodate fine-grained access control later, without having to migrate the data, it is advisable to use ADLS with HNS enabled when building a data lake on Azure. Additionally, without HNS enabled, renaming or deleting folders is not possible without incuring recursive operations, therefore performance for certain Spark based workloads may suffer.
 
 ### Using the Portal
 
@@ -323,81 +313,21 @@ data lake on Azure.
 
 6.  Select the security principal to assign the role to
 
-![](media/image8.png){width="5.145695538057743in"
-height="2.7239260717410323in"}
+![assignrbacusingportal](media/assignrbacusingportal)
 
 ### Using the API
 
-headers = {\'Content-type\': \'application/json;
-charset=utf-8\',\'Authorization\': \'Bearer %s\' % bearertoken}
+[Click here to view the code sample](./APIs/assign_rbac.py)
 
-params = {
+For more information see:
 
-\'api-version\': \'2019-04-01-preview\'
+-   [Assigning roles using API](https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-rest)
 
-}
-
-assign\_Storage\_Blob\_Data\_Contributor = {
-
-\"properties\": {
-
-\"roleDefinitionId\":
-\"/subscriptions/\[SUBSCRIPTION\_ID\]/resourceGroups/\[RESOURCE\_GROUP\]/providers/Microsoft.Storage/storageAccounts/\[STORAGE\_ACC\]/blobServices/default/containers/\[CONTAINER\_NAME\]/providers/Microsoft.Authorization/roleDefinitions/\[BUILT\_IN\_ROLE\_ID\]\",
-
-\"principalId\": \"\[Security\_Group\_Object\_Id\]\"
-
-}
-
-}
-
-assign\_Storage\_Blob\_Data\_Reader = {
-
-\"properties\": {
-
-\"roleDefinitionId\":
-\"/subscriptions/\[SUBSCRIPTION\_ID\]/resourceGroups/\[RESOURCE\_GROUP\]/providers/Microsoft.Storage/storageAccounts/\[STORAGE\_ACC\]/blobServices/default/containers/\[CONTAINER\_NAME\]/providers/Microsoft.Authorization/roleDefinitions/\[BUILT\_IN\_ROLE\_ID\]\",
-
-\"principalId\": \"\[Security\_Group\_Object\_Id\]\"
-
-}
-
-}
-
-request\_str =
-\"https://management.azure.com/subscriptions/\[SUBSCRIPTION\_ID\]/resourceGroups/\[RESOURCE\_GROUP\]/providers/Microsoft.Storage/storageAccounts/\[STORAGE\_ACC\]/blobServices/default/containers/\[CONTAINER\_NAME\]/providers/Microsoft.Authorization/roleAssignments/\"
-
-\# Make the contributor role assignment
-
-contributor\_assignment = requests.put(request\_str +str(uuid.uuid4()),
-data=json.dumps(assign\_Storage\_Blob\_Data\_Contributor),
-headers=headers, params=params)
-
-print(contributor\_assignment.text)
-
-\# Make the reader role assignment
-
-reader = requests.put(request\_str +str(uuid.uuid4()),
-data=json.dumps(assign\_Storage\_Blob\_Data\_Reader), headers=headers,
-params=params)
-
-print(reader\_assignment.text)
-
-For more information:
-
--   Assigning roles using API
-
-<https://docs.microsoft.com/en-us/azure/role-based-access-control/role-assignments-rest>
-
--   Unique ID for each built-in role
-
-<https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#all>
+-   [Unique ID for each built-in role](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#all)
 
 ### Storage configurations
 
-![](media/image9.png){width="2.5277777777777777in"
-height="2.792361111111111in"}![](media/image9.png){width="2.8815168416447943in"
-height="1.8184273840769904in"}Option 1: Zones scoped at container level
-Option 2: Zones scoped at storage account level
+![rbacstorageconfigurations](media/rbacstorageconfigurations.png)
 
 Option 1:
 
