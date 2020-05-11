@@ -20,15 +20,15 @@ Contents
   - [Using RBAC only](#using-rbac-only)
     - [Using the Portal](#using-the-portal-2)
     - [Using the API](#using-the-api-2)
-    - [Storage configurations](#storage-configurations)
+    - [Storage permutations](#storage-configurations)
   - [Using ACLs only](#using-acls-only)
     - [Use nested groups where possible](#use-nested-groups-where-possible)
     - [Using Storage Explorer in the Portal (Preview)](#using-storage-explorer-in-the-portal-preview)
     - [Using Azure Storage Explorer](#using-azure-storage-explorer)
     - [Using the API](#using-the-api-3)
-    - [Design permutations](#design-permutations)
+    - [Storage permutations](#design-permutations)
   - [Using both RBAC and ACLs](#using-both-rbac-and-acls)
-    - [Design considerations](#design-considerations)
+    - [Storage permuatations](#design-considerations)
 
 Introduction
 ============
@@ -325,7 +325,7 @@ For more information see:
 
 -   [Unique ID for each built-in role](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#all)
 
-### Storage configurations
+### Storage permutations
 
 ![rbacstorageconfigurations](media/rbacstorageconfigurations.png)
 
@@ -353,278 +353,90 @@ As per the [ADLS best practices](https://docs.microsoft.com/en-us/azure/storage/
 
 ![flatgroupsissue](media/flatgroupsissue.png)
 
-In order for each group to obtain read access to the files contained in
-their folder, they will need execute permissions from root, which is the
-container level, all the way down to the folder they are trying to
-access. Very quickly the limit of possible execute access control
-entries will be reached. To overcome this, it is best to start (before
-files and folders are created) with a *Global Execute* group which is
-assigned both *default* and *access* eXecute ACLs at the container
-level. This group is known as the parent group. Then add the group
-containing the individual identities (the member or sub-group) to the
-parent group. This is known as nested groups and from an ADLS
-authorisation perspective, the member group [inherits the
-permissions](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-groups-membership-azure-portal#add-a-group-to-another-group)
-of the parent group. The member group in this case will not need execute
-permissions as these permissions will be inherited because it belongs to
-the parent group. Additional nesting may provide greater flexibility if
-the security groups represent the teams or automated jobs which are
-sub-divided into readers and writers.
+In order for each group to obtain read access to the files contained in their folder, they will need execute permissions from root, which is the container level, all the way down to the folder they are trying to access. Very quickly the limit of possible execute access control entries will be reached. To overcome this, it is best to start (before files and folders are created) with a *Global Execute* group which is assigned both *default* and *access* eXecute ACLs at the container level. This group is known as the parent group. Then add the group containing the individual identities (the member or sub-group) to the parent group. This is known as nested groups and from an ADLS authorisation perspective, the member group [inherits the permissions](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-groups-membership-azure-portal#add-a-group-to-another-group) of the parent group. The member group in this case will not need execute permissions as these permissions will be inherited because it belongs to the parent group. Additional nesting may provide greater flexibility if the security groups represent the teams or automated jobs which are sub-divided into readers and writers.
 
 ![nestedgroups](media/nestedgroups.png)
 
 ### Using Storage Explorer in the Portal (Preview)
 
-Prerequisite: Follow the steps in "How to create a data lake container"
-above if you do not have an HNS enabled storage account and a container
-created.
+Prerequisite: Follow the steps in "How to create a data lake container" above if you do not have an HNS enabled storage account and a container created.
 
-### 
+> **_Note:_** Using Storage Explorer in the Portal (currently in Preview) does not support managing permissions (ACLs) at the container (root) level, only on the files and folders below root
 
-1.  Navigate to the storage account in the Azure Portal and select the
-    Storage Explorer (Preview) menu item
+1.  Navigate to the storage account in the Azure Portal and select the Storage Explorer (Preview) menu item
 
 2.  Expand the containers section and click on the relevant container
 
-3.  In the explorer panel, navigate to the folder or file you which to
-    add permissions for
+3.  In the explorer panel, navigate to the folder or file you which to add permissions for
 
 4.  Click "More" from the menu above and select "Manage Access"
 
 5.  Add the UPN or object ID into the field and click Add
 
-6.  With the security principal highlighted in blue, select the access
-    (and default if required) checkbox and select the read, write and
-    execute permissions as required.
+6.  With the security principal highlighted in blue, select the access (and default if required) checkbox and select the read, write and execute permissions as required.
 
 7.  Click Save
 
-![](media/image19.png){width="4.45522419072616in"
-height="2.8962707786526685in"}
+![storageexplorerportal](media/storageexplorerportal.png)
 
 ### Using Azure Storage Explorer
 
-Prerequisite: Follow the steps in "How to create a data lake container"
-above if you do not have an HNS enabled storage account and a container
-created.
+Prerequisite: Follow the steps in "How to create a data lake container" above if you do not have an HNS enabled storage account and a container created.
 
-1.  Obtain the user principal name (UPN) or object ID of the group you
-    wish to add permissions for.
+1.  Obtain the user principal name (UPN) or object ID of the group you wish to add permissions for.
 
-2.  Using Storage Explorer, navigate to the container, folder or file
-    you wish to grant access to
+2.  Using Storage Explorer, navigate to the container, folder or file you wish to grant access to
 
-3.  Right click on the container, folder or file and select Manage
-    Access
+3.  Right click on the container, folder or file and select Manage Access
 
 4.  Add the UPN or object ID into the field and click Add
 
-5.  With the security principal highlighted in blue, select the access
-    (and default if required) checkbox and select the read, write and
-    execute permissions as required.
+5.  With the security principal highlighted in blue, select the access (and default if required) checkbox and select the read, write and     execute permissions as required. 
 
 6.  Click Save
 
-![](media/image20.png){width="3.5074628171478563in"
-height="3.9609536307961504in"}
+![aclsusingstorageexplorer](media/aclsusingstorageexplorer.png)
 
 ### Using the API
 
-Setting ACLs are performed via the Path update API. The header requires
-the correct version, bearer token and one or more access control entries
-(ACE) - separated by a comma - using the x-ms-acl header.
+Setting ACLs are performed via the Path update API. The header requires the correct version, bearer token and one or more access control entries (ACE) - separated by a comma - using the x-ms-acl header.
 
-Each ACE has the format of \[scope:\]\[type\]:\[id\]:\[permissions\]
-where
+Each ACE has the format of \[scope:\]\[type\]:\[id\]:\[permissions\] where:
 
--   scope is either "*default*" for a default ACL or not specified which
-    denotes an access ACL
+-   scope is either "*default*" for a default ACL or not specified which denotes an access ACL
 
--   type is either user, group, mask or other. See
-    [here](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-access-control#users-and-identities)
-    for more details.
+-   type is either user, group, mask or other. See [here](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-access-control#users-and-identities) for more details.
 
--   id is the identifier of the security principal. In the case of a
-    security group, it is the Object ID of the group
+-   id is the identifier of the security principal. In the case of a security group, it is the Object ID of the group
 
--   permissions use the format of (r )ead, (w)rite, e(x)ecute and -- for
-    no permission.
+-   permissions use the format of (r )ead, (w)rite, e(x)ecute and -- for no permission.
 
-Refer to the
-[documentation](https://docs.microsoft.com/en-gb/rest/api/storageservices/datalakestoragegen2/path/update)
-for further information about the API.
+Refer to the [documentation](https://docs.microsoft.com/en-gb/rest/api/storageservices/datalakestoragegen2/path/update) for further information about the API. 
 
-This example below obtains the bearer token for storage.azure.com,
-creates a UUID for log analytics purposes and grants read, write and
-execute ACLs (default and access) to a security principal for a given
-account, container and path.
+This example below obtains the bearer token for storage.azure.com, creates a UUID for log analytics purposes and grants read, write and execute ACLs (default and access) to a security principal for a given account, container and path.
 
-Substitute the parameters in parentheses, and run the following code
-using a security principal who has the Storage Blob Data Owner role
-assigned to the storage account or container, so that the request has
-permissions to manage ACLs.
+Substitute the parameters in parentheses, and run the following code using a security principal who has the Storage Blob Data Owner role assigned to the storage account or container, so that the request has permissions to manage ACLs.
 
-import requests, uuid
+[Click here to view the code sample](./APIs/assign_acls.py)
 
-\#Authorisation request
+> **_Note:_** should you wish to apply ACL changes retrospectively (after the folders and files exist) then this could be achieved through a for loop recursively listing and setting each folder and file, however the simpler method may be to use a Powershell script with the -Recurse parameter as shown in [this example](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-directory-file-acl-powershell#set-acls-on-all-items-in-a-file-system). 
 
-endpoint =
-\'https://login.microsoftonline.com/\[TENANT\_ID\]/oauth2/token\'
+### Storage permutations
 
-headers = {\'Content-Type\': \'application/x-www-form-urlencoded\'}
+![aclsdesignpermutations](media/aclsdesignpermutations.png)
 
-payload =
-\'grant\_type=client\_credentials&client\_id=\[CLIENT\_ID\]&client\_secret=\[CLIENT\_SECRET\]&resource=https%3A%2F%2Fstorage.azure.com%2F\'
+Option 1: A single physical data lake approach where the lowest level of granularity can be flexible and applied at the appropriate folder depth. Remember that execute ACLs should be applied at the container level (root) down to the required folder. As the lowest level of granularity for RBAC is the storage container it is unlikely that this data lake design would work for an RBAC-only security model. Using RBAC, every process or person accessing the data lake would have global privileges across the data whether it be read (Storage Blob Data Reader) or read-write (Storage Blob Data Contributor) permissions. Not only does this increase the risk that those with read access might see something they shouldn't, but an even greater risk is that data could inadvertently be overwritten or deleted by one of the writers. For these reasons this design was not one of the RBAC-only options above.
 
-r = requests.post(endpoint, headers=headers, data=payload)
-
-response = r.json()
-
-\#extract the bearer token from the response
-
-bearertoken = response\[\"access\_token\"\]
-
-puuid = str(uuid.uuid4())
-
-print(\'Log analytics UUID\'+ puuid)
-
-headers = {\'x-ms-version\': \'2018-11-09\',\'Authorization\': \'Bearer
-%s\' % bearertoken, \'x-ms-acl\':
-\'user:c05d78ab-d947-4a76-a89b-c4aa68848a67:rwx,default:user:\[SECURITY\_PRINCIPAL\]:rwx\',\'x-ms-client-request-id\':
-\'%s\' % puuid}
-
-r =
-requests.patch(\"https://\[STORAGE\_ACCOUNT\].dfs.core.windows.net/\[CONTAINER\]/\[PATH\]?action=setAccessControl\",
-headers=headers)
-
-print(r.status\_code)
-
-Note: should you wish to apply ACL changes retrospectively (after the
-folders and files exist) then this could be achieved through a for loop
-recursively listing and setting each folder and file, however the
-simpler method may be to use a Powershell script with the -Recurse
-parameter as shown in [this
-example](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-directory-file-acl-powershell#set-acls-on-all-items-in-a-file-system).
-
-### Design permutations
-
-Option 1: Zones scoped at directory level Option 2: Zones scoped at
-container level
-
-![](media/image9.png){width="0.6284722222222222in"
-height="0.3298611111111111in"}![](media/image9.png){width="0.6284722222222222in"
-height="0.3298611111111111in"}
-
-![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-Option 3: Zones scoped at storage account level
-
-![](media/image9.png){width="0.6284722222222222in"
-height="0.3298611111111111in"}![](media/image9.png){width="0.6284722222222222in"
-height="0.3298611111111111in"}
-
-![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-Option 1: A single physical data lake approach where the lowest level of
-granularity can be flexible and applied at the appropriate folder depth.
-Remember that execute ACLs should be applied at the container level
-(root) down to the required folder. As the lowest level of granularity
-for RBAC is the storage container it is unlikely that this data lake
-design would work for an RBAC-only security model. Using RBAC, every
-process or person accessing the data lake would have global privileges
-across the data whether it be read (Storage Blob Data Reader) or
-read-write (Storage Blob Data Contributor) permissions. Not only does
-this increase the risk that those with read access might see something
-they shouldn't, but an even greater risk is that data could
-inadvertently be overwritten or deleted by one of the writers. For these
-reasons this design was not one of the RBAC-only options above.
-
-Option 2:
-
-Option 3: This configuration provides both billing and "noisy neighbour"
-isolation
+Option 3: This configuration provides both billing and "noisy neighbour" isolation.
 
 Using both RBAC and ACLs
 ------------------------
 
-Storage Blob Data Contributor/Reader only provides access to the data
-and not the storage account. It can be granted at the storage account or
-container level. When Storage Blob Data Contributor is assigned ACLs
-[cannot]{.underline} be used to manage access. Where Storage Blob Data
-Reader is assigned, elevated write permissions can be granted using
-ACLs.
+Storage Blob Data Contributor/Reader only provides access to the data and not the storage account. It can be granted at the storage account or container level. When Storage Blob Data Contributor is assigned ACLs [cannot]{.underline} be used to manage access. Where Storage Blob Data Reader is assigned, elevated write permissions can be granted using ACLs.
 
-This approach favours scenarios where most users need read access to but
-only a few need write access. The data lake zones could be different
-storage accounts and data assets different containers or the data lake
-zones could be represented by containers and data assets represented by
-folders.
+This approach favours scenarios where most users need read access to but only a few need write access. The data lake zones could be different storage accounts and data assets different containers or the data lake zones could be represented by containers and data assets represented by folders.
 
-### Design considerations
+### Storage permutations
 
-Option 1: Zones scoped at container level Option 2: Zones scoped at
-storage account level
+![hybriddesignpermutations.png](media/hybriddesignpermutations.png.png)
 
-![](media/image9.png){width="0.6284722222222222in"
-height="0.3298611111111111in"}![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-![](media/image9.png){width="0.6284722222222222in"
-height="0.3298611111111111in"}
-
-![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-Option 3: Zones scoped at storage account level
-
-![](media/image9.png){width="0.6284722222222222in"
-height="0.3298611111111111in"}![](media/image9.png){width="0.6284722222222222in"
-height="0.3298611111111111in"}
-
-![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image10.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}![](media/image11.png){width="0.2923611111111111in"
-height="0.2923611111111111in"}
-
-Option 1:
