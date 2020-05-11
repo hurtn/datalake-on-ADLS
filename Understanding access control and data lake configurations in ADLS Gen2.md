@@ -53,13 +53,13 @@ approach for your organisation. Additionally, the examples use an over
 simplified representation of folder structures to illustrate the point
 but is not necessarily a reflection of reality. When a path such as
 ```text
-/raw/data\_asset
+/raw/data_asset
 ```
 is referenced, in reality this may a be more complex structure with
 "self-documenting" metadata embedded in the path that lead to the files,
 e.g.:
 ```text
-/datalake/raw/internal/datasource/entity/YYYY/MM/DD/\*
+/datalake/raw/internal/datasource/entity/YYYY/MM/DD/*
 ```
 For further ideas on data lake structure and design there are a number
 of online resources such as this [TechNet
@@ -195,15 +195,19 @@ See [here](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storag
 for another example of what ACL based permissions are required for a
 given operation.
 
+
+> **_Note:_**  
+- ACLs apply only to security principals in the same tenant, including guest users.
+-	Azure Databricks mount points can be created by any user with permissions to attach to a cluster. The mount point will be configured using service principal credentials or the AAD passthrough option, but at the time of creation permissions are not evaluated. Only when an operation is performed using the mount point will permissions be evaluated and any user who can attach to a cluster can attempt to use the mount point. Securing access to ADLS from Azure Databricks is covered in more detail here.
+
+
 How to create a data lake container 
 ====================================
 
 Using the Portal
 ----------------
 
-1.  [Create a storage
-    account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal)
-    with HNS enabled
+1.  [Create a storage account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) with HNS enabled
 
 2.  Navigate to the storage account
 
@@ -211,108 +215,66 @@ Using the Portal
 
 4.  Click + Container
 
-5.  Specify a container name in accordance with the [naming
-    convention](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create#name-a-container)
+5.  Specify a container name in accordance with the [naming convention](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create#name-a-container)
 
-![](media/image5.png){width="2.8273293963254593in"
-height="2.0283016185476814in"}
+![createcontainerusingportal](media/createcontainerusingportal.png)
 
 Using Storage Explorer
 ----------------------
 
-1.  [Download](https://azure.microsoft.com/en-us/features/storage-explorer/)
-    Azure Storage Explorer
+1.  [Download](https://azure.microsoft.com/en-us/features/storage-explorer/) Azure Storage Explorer
 
-2.  [Log
-    in](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-storage-explorer#log-in-to-storage-explorer)
-    to Storage Explorer
+2.  [Log in](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-quickstart-blobs-storage-explorer#log-in-to-storage-explorer) to Storage Explorer
 
-3.  [Create a storage
-    account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal)
-    with HNS enabled
+3.  [Create a storage account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) with HNS enabled
 
 4.  Find the subscription which hosts the storage account and expand it
 
-5.  Expand the Storage Accounts list and expand the storage account.
-    Note it should specify (ADLS Gen2) after the storage account name
+5.  Expand the Storage Accounts list and expand the storage account. *Note* it should specify (ADLS Gen2) after the storage account name
 
 6.  Right click on Blob Containers, click Create Blob Container
 
-7.  Enter a
-    [valid](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create#name-a-container)
-    container name and hit enter
+7.  Enter a [valid](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create#name-a-container) container name and hit enter
 
-![](media/image6.png){width="3.35419072615923in"
-height="1.677095363079615in"}
+![createcontainerusingstorageexplorer.png](media/createcontainerusingstorageexplorer.png.png)
 
-Note that Storage Explorer requires access to both management layer
-(subscriptions and storage accounts) and data layer (containers, blobs
-and data), therefore will require at least the Reader role to list
-storage accounts, and the Storage Blob Data Reader role to list or
-download folders and files. Alternatively, a SAS URI can be used if
-access to the management layer is not impossible. For information please
-see the
-[documentation](https://docs.microsoft.com/en-us/azure/storage/common/storage-explorer-troubleshooting?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&tabs=Windows%2C1904).
+> **_Note:_** Storage Explorer requires access to both management layer (subscriptions and storage accounts) and data layer (containers, blobs and data), therefore will require at least the Reader role to list storage accounts, and the Storage Blob Data Reader role to list or download folders and files. Alternatively, a SAS URI can be used if access to the management layer is not impossible. For information please see the [documentation](https://docs.microsoft.com/en-us/azure/storage/common/storage-explorer-troubleshooting?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json&tabs=Windows%2C1904).
 
 #### 
 
 Using the API
 -------------
 
-1.  [Create a service
-    principal](https://docs.microsoft.com/en-gb/azure/active-directory/develop/howto-create-service-principal-portal)
-    and
-    [secret](https://docs.microsoft.com/en-gb/azure/active-directory/develop/howto-create-service-principal-portal#create-a-new-application-secret)
+1.  [Create a service principal](https://docs.microsoft.com/en-gb/azure/active-directory/develop/howto-create-service-principal-portal) and [secret](https://docs.microsoft.com/en-gb/azure/active-directory/develop/howto-create-service-principal-portal#create-a-new-application-secret)
 
-2.  [Create a storage
-    account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal)
-    with HNS enabled
+2.  [Create a storage account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal) with HNS enabled
 
-3.  Use the following python code to create an authorisation token and
-    create a container. Replace the tokens in parentheses with the
-    required information. Ensure that a [valid container
-    name](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create#name-a-container)
-    is specified.
+3.  Use the following python code to create an authorisation token and create a container. Replace the tokens in parentheses with the required information. Ensure that a [valid container name](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create#name-a-container) is specified.
 
+```python
 import json
-
 import requests
-
 \#Setup the endpoint
-
 endpoint =
 \'https://login.microsoftonline.com/\[TENANT\_ID\]/oauth2/token\'
-
 headers = {\'Content-Type\': \'application/x-www-form-urlencoded\'}
-
 payload =
 \'grant\_type=client\_credentials&client\_id=\[CLIENT\_ID\]&client\_secret=\[CLIENT\_SECRET\]&resource=https%3A%2F%2Fstorage.azure.com%2F\'
-
 r = requests.post(endpoint, headers=headers, data=payload)
-
 response = r.json()
-
 \#extract the bearer token from the response
-
 bearertoken = response\[\"access\_token\"\]
-
 \# Set the storage header and parameter
-
 headers = {\'Authorization\': \'Bearer %s\' % bearertoken}
-
 params = {
-
 \'api-version\': \'2018-11-09\'
-
 }
-
 \# Create the container
-
 r =
 requests.put(\"https://\[STORAGE\_ACCOUNT\].dfs.core.windows.net/\[CONTAINER\_NAME\]?resource=filesystem\",
 headers=headers, params=params)
-
 print(r.status\_code)
+```
 
 How to create security groups 
 ==============================
