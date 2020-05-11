@@ -251,30 +251,7 @@ Using the API
 
 3.  Use the following python code to create an authorisation token and create a container. Replace the tokens in parentheses with the required information. Ensure that a [valid container name](https://docs.microsoft.com/en-us/azure/storage/blobs/storage-blob-container-create#name-a-container) is specified.
 
-```python
-import json
-import requests
-\#Setup the endpoint
-endpoint =
-\'https://login.microsoftonline.com/\[TENANT\_ID\]/oauth2/token\'
-headers = {\'Content-Type\': \'application/x-www-form-urlencoded\'}
-payload =
-\'grant\_type=client\_credentials&client\_id=\[CLIENT\_ID\]&client\_secret=\[CLIENT\_SECRET\]&resource=https%3A%2F%2Fstorage.azure.com%2F\'
-r = requests.post(endpoint, headers=headers, data=payload)
-response = r.json()
-\#extract the bearer token from the response
-bearertoken = response\[\"access\_token\"\]
-\# Set the storage header and parameter
-headers = {\'Authorization\': \'Bearer %s\' % bearertoken}
-params = {
-\'api-version\': \'2018-11-09\'
-}
-\# Create the container
-r =
-requests.put(\"https://\[STORAGE\_ACCOUNT\].dfs.core.windows.net/\[CONTAINER\_NAME\]?resource=filesystem\",
-headers=headers, params=params)
-print(r.status\_code)
-```
+https://github.com/hurtn/datalake-on-ADLS/blob/3507ebdc2e9b93ac1a8e295d88cbf217184af9f1/APIs/create_ADLS_container.py#L1-L18
 
 How to create security groups 
 ==============================
