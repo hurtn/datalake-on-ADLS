@@ -61,25 +61,11 @@ To guide the reader through the process of creating a data lake and configuring 
 Understanding the built-in RBAC roles
 =====================================
 
-Azure Storage has two layers of access: management and data.
-Subscriptions and storage accounts are accessed through the management
-layer. Containers, blobs, and other data resources are accessed through
-the data layer. For example, if you want to get a list of your storage
-accounts from Azure, you send a request to the management endpoint. If
-you want a list of blob containers in an account, you send a request to
-the appropriate service endpoint.
+Azure Storage has two layers of access: management and data. Subscriptions and storage accounts are accessed through the management layer. Containers, blobs, and other data resources are accessed through the data layer. For example, if you want to get a list of your storage accounts from Azure, you send a request to the management endpoint. If you want a list of blob containers in an account, you send a request to the appropriate service endpoint.
 
-RBAC roles can contain permissions for management or data layer access.
-The Reader role, for example, grants read-only access to management
-layer resources.
+RBAC roles can contain permissions for management or data layer access. The Reader role, for example, grants read-only access to management layer resources.
 
-Only roles explicitly defined for data access permit a security
-principal to access blob or queue data. Roles such as Owner,
-Contributor, Reader and Storage Account Contributor permit a security
-principal to manage a storage account, but do not provide access to the
-blob or queue data within that account. However, these roles (excluding
-Reader) can obtain access to the storage keys which can be used in
-various client tools to access the data.
+Only roles explicitly defined for data access permit a security principal to access blob or queue data. Roles such as Owner, Contributor, Reader and Storage Account Contributor permit a security principal to manage a storage account, but do not provide access to the blob or queue data within that account. However, these roles (excluding Reader) can obtain access to the storage keys which can be used in various client tools to access the data.
 
 Built-in Management Roles
 -------------------------
@@ -101,70 +87,33 @@ Built-in Data Roles
 
 -   [Storage Blob Data Reader](https://docs.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-blob-data-reader):  Read and list Azure Storage containers and blobs.
 
-Storage Blob Data Owner is considered a super-user and is granted full
-access to all mutating operations, including setting the owner of a
-directory or file as well as ACLs for directories and files for which
-they are not the owner. Super-user access is the only authorized manner
-to change the owner of a resource.
+Storage Blob Data Owner is considered a super-user and is granted full access to all mutating operations, including setting the owner of a directory or file as well as ACLs for directories and files for which they are not the owner. Super-user access is the only authorized manner to change the owner of a resource.
 
 > **_Note:_** RBAC assignments can take up to 5 minutes to propagate and take affect.
 
 How data lake structure relates to access control
 =================================================
 
-A very basic data lake structure may consist of three "layers" or
-"zones" which represent the stage and quality of data at a particular
-stage in its transformation lifecycle. While raw data may not yield
-business value or insights immediately, storing historical high fidelity
-data in a cost effective manner will allow the value to be unlocked
-later as transformation pipelines are built to cleanse and enrich the
-data. Data often needs to be prepared, modelled and optimised for
-analytics before it is transformed and stored in the curated layer.
+A very basic data lake structure may consist of three "layers" or "zones" which represent the stage and quality of data at a particular stage in its transformation lifecycle. While raw data may not yield business value or insights immediately, storing historical high fidelity data in a cost effective manner will allow the value to be unlocked later as transformation pipelines are built to cleanse and enrich the data. Data often needs to be prepared, modelled and optimised for analytics before it is transformed and stored in the curated layer.
 
 ![generic data lake structure](media/datalakestructure.png)
 
-Often the value of data, and therefore implicitly the layers also, have
-a bearing on which groups of users (automated or human) access the data
-at a particular point in the lifecycle. For example, analysts will
-typically only want to work with curated data, whilst engineers building
-transformation pipelines may need read access to all three layers to
-pull samples of data into the development environment in order to
-develop and test a new pipeline. Data in the curated layer may not have
-reached its end state, it is plausible that new datasets may be
-developed with other curated datasets. Whilst users may need read access
-to various parts of the lake, no-one should have write access except for
-the service principals or managed identities used for automated
-processing such as ADF pipelines or Azure Databricks jobs. These
-automated processes should have passed the necessary test and review
-phases to prevent data corruption, or even worse data loss.
+Often the value of data, and therefore implicitly the layers also, have a bearing on which groups of users (automated or human) access the data at a particular point in the lifecycle. For example, analysts will typically only want to work with curated data, whilst engineers building transformation pipelines may need read access to all three layers to pull samples of data into the development environment in order to develop and test a new pipeline. Data in the curated layer may not have reached its end state, it is plausible that new datasets may be developed with other curated datasets. Whilst users may need read access to various parts of the lake, no-one should have write access except for the service principals or managed identities used for automated processing such as ADF pipelines or Azure Databricks jobs. These automated processes should have passed the necessary test and review phases to prevent data corruption, or even worse data loss.
 
-From an ADLS Gen2 perspective, the data lake layers can be implemented
-as multiple storage accounts, containers or folders, so when considering
-access control throughout these layers, decide on a level of granularity
-which suits your business needs. For some, coarse grained access at the
-data lake zone may be sufficient control, but for others, fine-grained
-access control at the data asset level may be required. Decide which is
-the most granular level of access control appropriate and apply
-permissions at that level. Review the possible scenarios later in this
-document to decide whether RBAC or ACLs, or a combination of both, will
-best suits your scenario. When assigning permissions at a greater scope
-than the data lake level, please refer the [RBAC
-documentation](https://docs.microsoft.com/en-gb/azure/storage/common/storage-auth-aad-rbac-portal?toc=%2fazure%2fstorage%2fblobs%2ftoc.json#determine-resource-scope).
+From an ADLS Gen2 perspective, the data lake layers can be implemented as multiple storage accounts, containers or folders, so when considering access control throughout these layers, decide on a level of granularity which suits your business needs. For some, coarse grained access at the data lake zone may be sufficient control, but for others, fine-grained access control at the data asset level may be required. Decide which is the most granular level of access control appropriate and apply permissions at that level. Review the possible scenarios later in this document to decide whether RBAC or ACLs, or a combination of both, will best suits your scenario. When assigning permissions at a greater scope than the data lake level, please refer the [RBAC documentation](https://docs.microsoft.com/en-gb/azure/storage/common/storage-auth-aad-rbac-portal?toc=%2fazure%2fstorage%2fblobs%2ftoc.json#determine-resource-scope). 
 
 > **_Note:_** If your subscription includes an Azure Databricks namespace, roles that are scoped to the subscription will not grant access to storage account data. Scope roles to the resource group, storage account, or container level instead.
 
 How access is evaluated in ADLS
 ===============================
 
-During security principal-based authorisation, permissions will be
-evaluated in the following order (figure 2) depending on the operation
-being performed. This excludes [Shared Key and SAS
-authentication](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storage-access-control)
-methods in which no identity is associated with the operation and
-assumes that the storage account is accessible via appropriate
-networking configuration. It also excludes scenarios in which the
-security principal has been assigned the Storage Blob Data Owner
-built-in role which provides *super-user* access.
+During security principal-based authorisation, permissions will be evaluated in the following order as depicted in the diagram below and described in [the documentation](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storage-access-control#the-impact-of-role-assignments-on-file-and-directory-level-access-control-lists):
+
+- RBAC is evaluated first and takes priority over any ACL assignments. 
+- If the operation is fully authorised based on RBAC then ACLs are not evaluated at all. 
+- If the operation is not fully authorised then ACLs are evaluated.
+
+This excludes [Shared Key and SAS authentication](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storage-access-control) methods in which no identity is associated with the operation and assumes that the storage account is accessible via appropriate networking configuration. It also excludes scenarios in which the security principal has been assigned the Storage Blob Data Owner built-in role which provides *super-user* access.
 
 ![howaccessisevaluated](media/howaccessisevaluated.png)
 
