@@ -33,51 +33,28 @@ Contents
 Introduction
 ============
 
-Whilst the end goal of this article is to allow the reader to assess and
-understand the access control mechanisms in Azure Data Lake Storage
-(ADLS) Gen2, namely RBAC and ACLs, they will also learn
+Whilst the end goal of this article is to help the reader assess and understand the access control mechanisms in Azure Data Lake Storage (ADLS) Gen2, namely RBAC and ACLs, they will also learn 
 
 -   How access is evaluated between these two mechanisms
 
 -   How to configure access control using RBAC or ACLs or both
 
--   How these access control mechanisms can be applied to different data
-    lake implementation patterns and the associated design
-    considerations
+-   How these access control mechanisms can be applied to different data lake implementation patterns and the associated design considerations
 
-The topics covered assume a basic knowledge of storage containers,
-security groups, RBAC and ACLs. To frame the discussion a generic data
-lake structure of raw, cleansed and curated layers is referenced. This
-is by no means an endorsement of best practise nor may it be the correct
-approach for your organisation. Additionally, the examples use an over
-simplified representation of folder structures to illustrate the point
-but is not necessarily a reflection of reality. When a path such as
+The topics covered assume a basic knowledge of storage containers, security groups, RBAC and ACLs. To frame the discussion a generic data lake structure of raw, cleansed and curated layers is referenced. This is one of many possible approaches but not necessarily the correct structure for your organisation. Additionally, the examples use an over simplified representation of folder structures to illustrate the point but is not necessarily a reflection of reality. When a path such as 
+
 ```text
 /raw/data_asset
 ```
-is referenced, in reality this may a be more complex structure with
-"self-documenting" metadata embedded in the path that lead to the files,
-e.g.:
+is referenced, in reality this may be a more complex structure with "self-documenting" metadata embedded in the path that lead to the files, e.g.:
+
 ```text
 /datalake/raw/internal/datasource/entity/YYYY/MM/DD/*
 ```
-For further ideas on data lake structure and design there are a number
-of online resources such as this [TechNet
-article](https://cloudblogs.microsoft.com/industry-blog/en-gb/technetuk/2020/04/09/building-your-data-lake-on-azure-data-lake-storage-gen2-part-1/).
 
-To guide the reader through the process of creating a data lake and
-configuring access control, step-by-step portal instructions have been
-provided, along with sample code to support "LakeOps". All code samples
-are written in Python and use the Azure APIs instead of the associated
-SDK. The reason is twofold: a.) it can be adapted to any other
-programming language or utility (such as cUrl or Postman) which supports
-REST APIs and b.) SDK availability or operation support at the time of
-writing. The code is provided "as is" and can be run locally if Python
-3.6 is installed, or using various options in Azure such as Azure
-Notebooks, Azure Databricks or even Azure DevOps. If you are new to the
-Azure REST APIs, please refer to the following
-[documentation](https://docs.microsoft.com/en-gb/rest/api/azure/) to
-help you get started.
+For further ideas on data lake structure and design there are a number of online resources such as this [TechNet article](https://cloudblogs.microsoft.com/industry-blog/en-gb/technetuk/2020/04/09/building-your-data-lake-on-azure-data-lake-storage-gen2-part-1/).
+
+To guide the reader through the process of creating a data lake and configuring access control, step-by-step portal instructions have been provided, along with sample code to support "LakeOps". All code samples are written in Python and use the Azure APIs instead of the associated SDK. The reason is twofold: a.) it can be adapted to any other programming language or utility (such as cUrl or Postman) which supports REST APIs and b.) SDK availability or operation support at the time of writing. The code is provided "as is" and can be run locally if Python 3.6 is installed, or using various options in Azure such as Azure Notebooks, Azure Databricks or even Azure DevOps. If you are new to the Azure REST APIs, please refer to the following [documentation](https://docs.microsoft.com/en-gb/rest/api/azure/) to help you get started.
 
 > **_Note:_** Creating security groups requires necessary permissions to your Azure Active Directory (AAD) tenant or the Microsoft Graph API. In some organisations this level of access can be difficult to obtain, therefore to follow the steps in this article it may be easier to use a [free account](https://azure.microsoft.com/en-gb/free/), or personal account with a [Visual Studio subscription](https://docs.microsoft.com/en-us/visualstudio/subscriptions/vs-azure) or ask your Azure Administrator to create a new AAD tenant and [add a subscription](https://docs.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-subscriptions-associated-directory) to the new directory. 
 
