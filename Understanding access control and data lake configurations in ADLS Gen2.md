@@ -113,7 +113,7 @@ During security principal-based authorisation, permissions will be evaluated in 
 - If the operation is fully authorised based on RBAC then ACLs are not evaluated at all. 
 - If the operation is not fully authorised then ACLs are evaluated.
 
-This excludes [Shared Key and SAS authentication](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storage-access-control) methods in which no identity is associated with the operation and assumes that the storage account is accessible via appropriate networking configuration. It also excludes scenarios in which the security principal has been assigned the Storage Blob Data Owner built-in role which provides *super-user* access.
+> **_Note:_** This description excludes [Shared Key and SAS authentication](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storage-access-control) methods in which no identity is associated with the operation and assumes that the storage account is accessible via appropriate networking configuration. It also excludes scenarios in which the security principal has been assigned the Storage Blob Data Owner built-in role which provides *super-user* access.
 
 ![howaccessisevaluated](media/howaccessisevaluated.png)
 
