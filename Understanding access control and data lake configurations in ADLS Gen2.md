@@ -115,7 +115,7 @@ During security principal-based authorisation, permissions will be evaluated in 
 
 > **_Note:_** This description excludes [Shared Key and SAS authentication](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storage-access-control) methods in which no identity is associated with the operation and assumes that the storage account is accessible via appropriate networking configuration. It also excludes scenarios in which the security principal has been assigned the Storage Blob Data Owner built-in role which provides *super-user* access.
 
-![howaccessisevaluated](media/howaccessisevaluated.png)
+![howaccessisevaluated](media/howaccessisevaluatedv2.png)
 
 See [here](https://docs.microsoft.com/en-gb/azure/storage/blobs/data-lake-storage-access-control#common-scenarios-related-to-permissions)
 for another example of what ACL based permissions are required for a
