@@ -284,6 +284,8 @@ To overcome this, various approaches are possible. Two options are outlined belo
 
 ##Approach 1 -the “Other” ACL entry
 Ensure that every part of the path from root to lowest level has execute permissions (--x). If the intended access group has Read and Execute permissions in the lowest part of the chain, it will be possible for that group to read the data appropriately. This works similarly for write.
+![root_acl](media/acl_other_root.png)
+![folder_acl](media/acl_other_lowest.png)
 
 ##Approach 2 – the covering execute group
 Start (before files and folders are created) with a Global Execute group which is assigned both default and access ACLs at the container level. This group is known as the parent group. Then add the group containing the individual identities (the member or sub-group) to the parent group. This is known as nested groups and from an ADLS authorisation perspective, the member group inherits the permissions of the parent group. The member group in this case will not need execute permissions as these permissions will be inherited because it belongs to the parent group.  Additional nesting may provide greater flexibility if the security groups represent the teams or automated jobs which are sub-divided into readers and writers.
