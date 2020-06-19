@@ -283,8 +283,9 @@ In order for each group to obtain read access to the files contained in their fo
 To overcome this, various approaches are possible. Two options are outlined below.
 
 ## Approach 1 -the “Other” ACL entry
-Ensure that every part of the path from root to lowest level has execute permissions (--x). If the intended access group has Read and Execute permissions in the lowest part of the chain, it will be possible for that group to read the data appropriately. This works similarly for write.
-![root_acl](media/acl_other_root.png)
+Ensure that every part of the path from root to lowest level has execute permissions (--x). This can be achieved using the "Other" ACL entry set at the container/root with defaults and access ACLs applied as shown in the first diagram below. This exceute permission propogates down any subsequently added child folders until the depth/folder where the intended access group should have Read and Execute permissions (in the lowest part of the chain as depicted in the second image), which will grant that group access to read the data appropriately. This approach works similarly for write access.
+
+![root_acl](media/acl_other_rootv2.png)
 ![folder_acl](media/acl_other_lowest.png)
 
 ## Approach 2 – the covering execute group
