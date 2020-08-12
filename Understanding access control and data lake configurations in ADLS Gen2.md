@@ -282,12 +282,12 @@ As per the [ADLS best practices](https://docs.microsoft.com/en-us/azure/storage/
 
 There are two possible solutions to this outlined below but the recommended approach is to make use of nested groups.
 
-## Approach 1 – the parent execute group
+#### Approach 1 – the parent execute group
 Where possible before files and folders are created, begin with a parent group which is assigned execute permissions to both default and access ACLs at the container level. Then add the groups requiring data access to the parent group. This technique is known as nesting groups, and from an ADLS authorisation perspective, the member group inherits the permissions of the parent group, providing "global" execute permissions to all member groups. The member group in this case will not need execute permissions as these permissions will be inherited because it belongs to the parent group.  Additional nesting may provide greater flexibility and agility if the security groups that represent teams or automated jobs are added to the data access reader and writer groups.
 
 ![nestedgroups](media/nestedgroups.png)
 
-## Approach 2 -the “Other” ACL entry
+#### Approach 2 -the “Other” ACL entry
 Another way to ensure that every part of the path from root to lowest level has execute permissions (--x) is to use the "Other" ACL entry set at the container/root, with defaults and access ACLs applied as shown in the first diagram below. This exceute permission propogates down any subsequently added child folders until the depth/folder where the intended access group should have Read and Execute permissions (in the lowest part of the chain as depicted in the second image), which will grant that group access to read the data appropriately. This approach works similarly for write access.
 
 ![root_acl](media/acl_other_rootv2.png)
