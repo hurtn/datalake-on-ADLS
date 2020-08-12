@@ -16,7 +16,7 @@ Contents
 - [How to create security groups](#how-to-create-security-groups)
   - [Using the Portal](#using-the-portal-1)
   - [Using the API](#using-the-api-1)
-- [Configuring access to ADLS & data lake storage configurations](#configuring-access-to-adls-&-data-lake-storage-configurations)
+- [Configuring access to ADLS and data lake storage configurations](#configuring-access-to-adls-and-data-lake-storage-configurations)
   - [Configure access using RBAC only](#configure-access-using-rbac-only)
     - [Using the Portal](#using-the-portal-2)
     - [Using the API](#using-the-api-2)
@@ -212,8 +212,8 @@ for more details about the permissions required and the API definition.
 
 [Click here to view the code sample](./APIs/create_security_group.py)
 
-Configuring access to ADLS & data lake storage configurations
-=============================================================
+Configuring access to ADLS and data lake storage configurations
+===============================================================
 
 This section reviews the three possible approaches to implement access control in ADLS using RBAC or ACLs or a combination of both. It demonstrates how to configure these mechanisms either through the portal, storage explorer or the APIs.
 
