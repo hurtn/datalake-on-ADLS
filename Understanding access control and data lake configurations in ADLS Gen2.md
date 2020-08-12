@@ -367,11 +367,14 @@ Option 3: This configuration provides both billing and "noisy neighbour" isolati
 Using both RBAC and ACLs
 ------------------------
 
-Storage Blob Data Contributor/Reader only provides access to the data and not the storage account. It can be granted at the storage account or container level. When Storage Blob Data Contributor is assigned ACLs [cannot]{.underline} be used to manage access. Where Storage Blob Data Reader is assigned, elevated write permissions can be granted using ACLs.
+Storage Blob Data Contributor/Reader only provides access to the data and not the storage account. It can be granted at the storage account or container level. When Storage Blob Data Contributor is assigned, ACLs __cannot__ be used to manage access. Where Storage Blob Data Reader is assigned, elevated write permissions can be granted using ACLs. Refer to the section above on [how access is evaluated in ADLS](#how-access-is-evaluated-in-adls).
 
-This approach favours scenarios where most users need read access to but only a few need write access. The data lake zones could be different storage accounts and data assets different containers or the data lake zones could be represented by containers and data assets represented by folders.
+This approach favours scenarios where most users need read access to but only a few need write access. The data lake zones could be different storage accounts and data assets could be different containers, or the data lake zones could be represented by containers and data assets represented by folders.
 
 ### Storage permutations
 
 ![hybriddesignpermutations](media/hybriddesignpermutations.png)
 
+Conclusion
+
+There is no single approach to managing data lake access that will suit everyone. One of the major benefits of a data lake is to democratise and provide friction-free access to data however in reality different organisations will have different levels of governance and control over their data. Some have a centralised team which manages access and the provisioning of AAD groups with rigorous internal controls. Some are more agile and have decentralised control. The approach chosen should meet the required level of governance but should not result in undue delays or friction in gaining access to data, otherwise the value of the data lake may be diminished, or even worse may result in silos, the very thing data lakes are designed to prevent.
