@@ -20,15 +20,15 @@ Contents
   - [Using RBAC only](#using-rbac-only)
     - [Using the Portal](#using-the-portal-2)
     - [Using the API](#using-the-api-2)
-    - [Storage permutations](#storage-permutations)
+    - [Storage permutations](#storage-permutations-1)
   - [Using ACLs only](#using-acls-only)
     - [Use nested groups where possible](#use-nested-groups-where-possible)
     - [Using Storage Explorer in the Portal (Preview)](#using-storage-explorer-in-the-portal-preview)
     - [Using Azure Storage Explorer](#using-azure-storage-explorer)
     - [Using the API](#using-the-api-3)
-    - [Storage permutations](##storage-permutations-2)
+    - [Storage permutations](#storage-permutations-2)
   - [Using both RBAC and ACLs](#using-both-rbac-and-acls)
-    - [Storage permuatations](##storage-permutations-3)
+    - [Storage permuatations](#storage-permutations-3)
 - [Conclusion](#conclusion)
 
 Introduction
