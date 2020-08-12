@@ -13,10 +13,10 @@ Contents
   - [Using the Portal](#using-the-portal)
   - [Using Storage Explorer](#using-storage-explorer)
   - [Using the API](#using-the-api)
-[How to create security groups](#how-to-create-security-groups)
+- [How to create security groups](#how-to-create-security-groups)
   - [Using the Portal](#using-the-portal-1)
   - [Using the API](#using-the-api-1)
-[Configuring access to ADLS & data lake storage configurations](#configuring-access-to-adls-data-lake-storage-configurations)
+- [Configuring access to ADLS & data lake storage configurations](#configuring-access-to-adls-data-lake-storage-configurations)
   - [Using RBAC only](#using-rbac-only)
     - [Using the Portal](#using-the-portal-2)
     - [Using the API](#using-the-api-2)
@@ -29,6 +29,7 @@ Contents
     - [Storage permutations](#design-permutations)
   - [Using both RBAC and ACLs](#using-both-rbac-and-acls)
     - [Storage permuatations](#design-considerations)
+- [Conclusion](#conclusion)
 
 Introduction
 ============
@@ -376,5 +377,6 @@ This approach favours scenarios where most users need read access to but only a 
 ![hybriddesignpermutations](media/hybriddesignpermutations.png)
 
 Conclusion
+==========
 
 There is no single approach to managing data lake access that will suit everyone. One of the major benefits of a data lake is to democratise and provide friction-free access to data however in reality different organisations will have different levels of governance and control over their data. Some have a centralised team which manages access and the provisioning of AAD groups with rigorous internal controls. Some are more agile and have decentralised control. The approach chosen should meet the required level of governance but should not result in undue delays or friction in gaining access to data, otherwise the value of the data lake may be diminished, or even worse may result in silos, the very thing data lakes are designed to prevent.
