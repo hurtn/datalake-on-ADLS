@@ -17,17 +17,16 @@ Contents
   - [Using the Portal](#using-the-portal-1)
   - [Using the API](#using-the-api-1)
 - [Configuring access to ADLS & data lake storage configurations](#configuring-access-to-adls-data-lake-storage-configurations)
-  - [Using RBAC only](#using-rbac-only)
+  - [Configure access using RBAC only](#configure-access-using-rbac-only)
     - [Using the Portal](#using-the-portal-2)
     - [Using the API](#using-the-api-2)
     - [Storage permutations](#storage-permutations-1)
-  - [Using ACLs only](#using-acls-only)
-    - [Use nested groups where possible](#use-nested-groups-where-possible)
+  - [Configure access using ACLs only](#configure-access-using-acls-only)
     - [Using Storage Explorer in the Portal (Preview)](#using-storage-explorer-in-the-portal-preview)
     - [Using Azure Storage Explorer](#using-azure-storage-explorer)
     - [Using the API](#using-the-api-3)
     - [Storage permutations](#storage-permutations-2)
-  - [Using both RBAC and ACLs](#using-both-rbac-and-acls)
+  - [Configure access using both RBAC and ACLs](#configure-access-using-both-rbac-and-acls)
     - [Storage permuatations](#storage-permutations-3)
 - [Conclusion](#conclusion)
 
@@ -216,15 +215,14 @@ for more details about the permissions required and the API definition.
 Configuring access to ADLS & data lake storage configurations
 =============================================================
 
-This section reviews the three possible approaches to implement access
-control in ADLS using RBAC or ACLs or a combination of both. It
-demonstrates how to configure these mechanisms either through the
-portal, storage
+This section reviews the three possible approaches to implement access control in ADLS using RBAC or ACLs or a combination of both. It demonstrates how to configure these mechanisms either through the portal, storage explorer or the APIs.
 
-Using RBAC only
----------------
+Configure access using RBAC only
+--------------------------------
 
 When using only RBAC, one may question whether ADLS Gen2 is required at all, particularly as there is an [additional cost](https://azure.microsoft.com/en-gb/pricing/details/storage/data-lake/) associated with the hierarchical namespace (HNS)option. The answer is flexibility because HNS cannot be enabled on a general purpose v2 storage account after the account has been created. Therefore to accommodate fine-grained access control later, without having to migrate the data, it is advisable to use ADLS with HNS enabled when building a data lake on Azure. Additionally, without HNS enabled, renaming or deleting folders is not possible without incuring recursive operations, therefore performance for certain Spark based workloads may suffer.
+
+> **_Caution:_** Role assignments are limited to 2000 per subscription therefore option 2 is not recommended for a large number of data assets. Instead grant RBAC at storage account level or use ACLs as a method of access control.
 
 ### Using the Portal
 
@@ -256,25 +254,16 @@ For more information see:
 
 ![rbacstorageconfigurations](media/rbacstorageconfigurations.png)
 
-Option 1:
+__Option 1:__
 
-Using this pattern the lowest level of granularity at which permissions
-could be applied is at the zone level, meaning that consumers and
-producers will either have access read or write to all of the data in
-particular zone.
+Using this pattern the lowest level of granularity at which permissions could be applied is at the zone level, meaning that consumers and producers will either have access read or write to all of the data in particular zone.
 
-Option 2:
+__Option 2:__
 
-In this pattern each storage account will represent a particular zone,
-for example raw or curated, and the lowest level of granularity at which
-permissions could be applied is at the data asset level.
+In this pattern each storage account will represent a particular zone, for example raw or curated, and the lowest level of granularity at which permissions could be applied is at the data asset level.
 
-> **_Caution:_** Role assignments are limited to 2000 per subscription therefore option 2 is not recommended for a large number of data assets. Instead grant RBAC at storage account level or use ACLs as a method of access control.
-
-Using ACLs only
----------------
-
-### Use nested groups where possible
+Configure access using ACLs only
+--------------------------------
 
 As per the [ADLS best practices](https://docs.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-best-practices#use-security-groups-versus-individual-users) it is recommended to assign access control entries to a security group rather than an individual user or service principal. When adding or removing users from the group no updates to ADLS are required and using groups also reduces the chance of exceeding the 32 access control entries per file or folder ACL. After the 4 default entries that leaves only 28 remaining for permission assignments. However, even when using groups, a proliferation of access control entries may occur at top levels of the directory tree, particularly when very granular permissions with many different groups are required. In order for each group to obtain read access to the files contained in their folder, they will need execute permissions from root, which is the container level, all the way down to the folder they are trying to access. It is likely that the 32 access control entry limit will be reached in the root or levels close to root. An example of this scenario is depicted below: 
 
@@ -282,12 +271,12 @@ As per the [ADLS best practices](https://docs.microsoft.com/en-us/azure/storage/
 
 There are two possible solutions to this outlined below but the recommended approach is to make use of nested groups.
 
-#### Approach 1 – the parent execute group
+### Approach 1 – the parent execute group
 Where possible before files and folders are created, begin with a parent group which is assigned execute permissions to both default and access ACLs at the container level. Then add the groups requiring data access to the parent group. This technique is known as nesting groups, and from an ADLS authorisation perspective, the member group inherits the permissions of the parent group, providing "global" execute permissions to all member groups. The member group in this case will not need execute permissions as these permissions will be inherited because it belongs to the parent group.  Additional nesting may provide greater flexibility and agility if the security groups that represent teams or automated jobs are added to the data access reader and writer groups.
 
 ![nestedgroups](media/nestedgroups.png)
 
-#### Approach 2 -the “Other” ACL entry
+### Approach 2 -the “Other” ACL entry
 Another way to ensure that every part of the path from root to lowest level has execute permissions (--x) is to use the "Other" ACL entry set at the container/root, with defaults and access ACLs applied as shown in the first diagram below. This exceute permission propogates down any subsequently added child folders until the depth/folder where the intended access group should have Read and Execute permissions (in the lowest part of the chain as depicted in the second image), which will grant that group access to read the data appropriately. This approach works similarly for write access.
 
 ![root_acl](media/acl_other_rootv2.png)
