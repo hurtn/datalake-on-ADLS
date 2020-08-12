@@ -16,7 +16,7 @@ Contents
 - [How to create security groups](#how-to-create-security-groups)
   - [Using the Portal](#using-the-portal-1)
   - [Using the API](#using-the-api-1)
-- [Configuring access to ADLS & data lake storage configurations](#configuring-access-to-adls-data-lake-storage-configurations)
+- [Configuring access to ADLS & data lake storage configurations](#configuring-access-to-adls-&-data-lake-storage-configurations)
   - [Configure access using RBAC only](#configure-access-using-rbac-only)
     - [Using the Portal](#using-the-portal-2)
     - [Using the API](#using-the-api-2)
