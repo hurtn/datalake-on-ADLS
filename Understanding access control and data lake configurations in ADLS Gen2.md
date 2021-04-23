@@ -354,7 +354,8 @@ Substitute the parameters in parentheses, and run the following code using a sec
 
 Option 1: A single physical data lake approach where the lowest level of granularity can be flexible and applied at the appropriate folder depth. Remember that execute ACLs should be applied at the container level (root) down to the required folder. As the lowest level of granularity for RBAC is the storage container it is unlikely that this data lake design would work for an RBAC-only security model. Using RBAC, every process or person accessing the data lake would have global privileges across the data whether it be read (Storage Blob Data Reader) or read-write (Storage Blob Data Contributor) permissions. Not only does this increase the risk that those with read access might see something they shouldn't, but an even greater risk is that data could inadvertently be overwritten or deleted by one of the writers. For these reasons this design was not one of the RBAC-only options above.
 
-Option 3: This configuration provides both billing and "noisy neighbour" isolation.
+__Option 3:__
+This configuration provides both billing and "noisy neighbour" isolation.
 
 Using both RBAC and ACLs
 ------------------------
