@@ -91,7 +91,7 @@ Built-in Data Roles
 
 Storage Blob Data Owner is considered a super-user and is granted full access to all mutating operations, including setting the owner of a directory or file as well as ACLs for directories and files for which they are not the owner. Super-user access is the only authorized manner to change the owner of a resource.
 
-> **_Note:_** RBAC assignments can take up to 5 minutes to propagate and take affect.
+> **_Note:_** RBAC assignments can take up to 30 minutes to propagate and take affect.
 
 How data lake structure relates to access control
 =================================================
