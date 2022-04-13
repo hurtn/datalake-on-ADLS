@@ -357,6 +357,8 @@ Option 1: A single physical data lake approach where the lowest level of granula
 __Option 3:__
 This configuration provides both billing and "noisy neighbour" isolation.
 
+__Note: when using a mixture of both security groups and individual assignments at various levels in the hierarchy, if an individual is assigned as well as belonging to a group that is also assigned with different permissions, the individual assignment permissions supercede the group's permission. Where there multiple groups assigned but the same individual is contained in both groups then the permissions are combined.  
+
 Using both RBAC and ACLs
 ------------------------
 
